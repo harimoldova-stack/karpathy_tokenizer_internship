@@ -1,0 +1,27 @@
+INTERNSHIP DAY 1 — BYTE-LEVEL BPE TOKENIZER
+
+Goal:
+Implement a tokenizer based on Karpathy's tokenizer tutorial.
+
+What I built:
+1. Converted text to UTF-8 bytes.
+2. Started the vocabulary with 256 byte tokens.
+3. Counted adjacent token pairs.
+4. Selected the most frequent pair.
+5. Merged the selected pair into a new token.
+6. Repeated the merge process during tokenizer training.
+7. Implemented encode(): text -> token IDs.
+8. Implemented decode(): token IDs -> text.
+9. Added regex pre-tokenization.
+10. Added special-token support.
+11. Added saving/loading of the tokenizer model.
+12. Added tests for pair counting, merging, encoding and decoding.
+
+Main idea:
+BPE learns frequently occurring pieces of text and represents them as single
+tokens. The tokenizer converts human text into token IDs that can be processed
+by a language model.
+
+Important verification:
+I tested encode/decode round trips and checked that the decoded text matches
+the original text.
