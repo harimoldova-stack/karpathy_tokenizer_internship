@@ -1,0 +1,59 @@
+def multiply_list(numbers, factor):
+    result = []
+    for number in numbers:
+        result.append(number * factor)
+    return result
+
+
+def remove_negative(numbers):
+    result = []
+    for number in numbers:
+        if number >= 0:
+            result.append(number)
+    return result
+
+
+def find_even_numbers(numbers):
+    result = []
+    for number in numbers:
+        if number % 2 == 0:
+            result.append(number)
+    return result
+
+
+def find_odd_numbers(numbers):
+    result = []
+    for number in numbers:
+        if number % 2 != 0:
+            result.append(number)
+    return result
+
+
+def power(base, exponent):
+    return base ** exponent
+
+
+def percentage(value, total):
+    if total == 0:
+        return 0
+    return value / total * 100
+
+
+def clamp(value, minimum, maximum):
+    if value < minimum:
+        return minimum
+    if value > maximum:
+        return maximum
+    return value
+
+
+def is_positive(number):
+    return number > 0
+
+
+def is_negative(number):
+    return number < 0
+
+
+def is_zero(number):
+    return number == 0
