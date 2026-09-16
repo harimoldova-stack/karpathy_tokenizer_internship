@@ -51,7 +51,7 @@ model.eval()
 def generate(
     prompt,
     max_new_tokens=40,
-    temperature=0.8,
+    temperature=0.2,
     top_k=5
 ):
 
@@ -76,6 +76,7 @@ def generate(
 
         # Top-k sampling
         if top_k is not None:
+
             values, indices = torch.topk(
                 logits,
                 min(top_k, logits.size(-1))
@@ -145,7 +146,7 @@ prompt = "def multiply(a, b):"
 generated_code = generate(
     prompt,
     max_new_tokens=40,
-    temperature=0.8,
+    temperature=0.2,
     top_k=5
 )
 
@@ -166,7 +167,7 @@ print("\nGenerated code:")
 print(generated_code)
 
 print("\nSampling settings:")
-print("Temperature:", 0.8)
+print("Temperature:", 0.2)
 print("Top-k:", 5)
 
 print("\nSyntax check:")
