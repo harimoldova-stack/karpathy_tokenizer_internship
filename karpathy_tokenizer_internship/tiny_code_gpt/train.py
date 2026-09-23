@@ -6,20 +6,11 @@ from tokenizer import CharacterTokenizer
 from model import TinyGPT
 
 
-# -----------------------------
-# Settings
-# -----------------------------
-
 batch_size = 4
 block_size = 64
 learning_rate = 0.001
 steps = 5000
 embedding_size = 64
-
-
-# -----------------------------
-# Load data
-# -----------------------------
 
 base_path = Path(__file__).parent
 
@@ -32,24 +23,11 @@ with open(train_path, "r", encoding="utf-8") as file:
 with open(val_path, "r", encoding="utf-8") as file:
     val_text = file.read()
 
-
-# -----------------------------
-# Create tokenizer
-# -----------------------------
-
-# Build vocabulary from both datasets
 all_text = train_text + val_text
-
 tokenizer = CharacterTokenizer(all_text)
-
 vocab_size = tokenizer.vocab_size
 
 print("Vocabulary size:", vocab_size)
-
-
-# -----------------------------
-# Encode datasets
-# -----------------------------
 
 train_data = torch.tensor(
     tokenizer.encode(train_text),
@@ -62,12 +40,7 @@ val_data = torch.tensor(
 )
 
 
-# -----------------------------
-# Create batches
-# -----------------------------
-
 def get_batch(data):
-
     starts = torch.randint(
         0,
         len(data) - block_size - 1,
@@ -87,20 +60,11 @@ def get_batch(data):
     return inputs, targets
 
 
-# -----------------------------
-# Create model
-# -----------------------------
-
 model = TinyGPT(
     vocab_size=vocab_size,
     embedding_size=embedding_size,
     block_size=block_size
 )
-
-
-# -----------------------------
-# Optimizer
-# -----------------------------
 
 optimizer = torch.optim.AdamW(
     model.parameters(),
@@ -108,29 +72,24 @@ optimizer = torch.optim.AdamW(
 )
 
 
-# -----------------------------
-# Calculate validation loss
-# -----------------------------
-
-def calculate_loss(data):
-
-    inputs, targets = get_batch(data)
+def calculate_loss(data, batches=10):
+    total_loss = 0.0
 
     with torch.no_grad():
+        for _ in range(batches):
+            inputs, targets = get_batch(data)
 
-        logits = model(inputs)
+            logits = model(inputs)
 
-        loss = F.cross_entropy(
-            logits.view(-1, vocab_size),
-            targets.view(-1)
-        )
+            loss = F.cross_entropy(
+                logits.view(-1, vocab_size),
+                targets.view(-1)
+            )
 
-    return loss.item()
+            total_loss += loss.item()
 
+    return total_loss / batches
 
-# -----------------------------
-# Training
-# -----------------------------
 
 print("Starting training...")
 
@@ -154,7 +113,11 @@ for step in range(steps):
     if step % 50 == 0:
 
         train_loss = loss.item()
-        val_loss = calculate_loss(val_data)
+
+        val_loss = calculate_loss(
+            val_data,
+            batches=10
+        )
 
         print(
             f"Step {step}: "
@@ -163,11 +126,9 @@ for step in range(steps):
         )
 
 
-# -----------------------------
-# Save checkpoint
-# -----------------------------
-
-checkpoint_path = base_path / "tiny_code_gpt_checkpoint.pt"
+checkpoint_path = (
+    base_path / "tiny_code_gpt_checkpoint.pt"
+)
 
 torch.save(
     {
