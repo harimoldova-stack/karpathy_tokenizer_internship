@@ -12,3 +12,4 @@ For example:
 
 ```python
 def multiply(a, b):
+    return a * b
