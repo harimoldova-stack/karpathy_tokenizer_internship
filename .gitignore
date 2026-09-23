@@ -1,0 +1,5 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+karpathy_tokenizer_internship/tiny_code_gpt/tiny_code_gpt_checkpoint.pt
