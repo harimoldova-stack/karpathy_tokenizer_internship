@@ -54,6 +54,21 @@ def generate(
     temperature=0.2,
     top_k=5
 ):
+    # Validate generation settings
+    if temperature <= 0:
+        raise ValueError(
+            "temperature must be greater than 0."
+        )
+
+    if top_k is not None and top_k <= 0:
+        raise ValueError(
+            "top_k must be greater than 0 or None."
+        )
+
+    if max_new_tokens < 1:
+        raise ValueError(
+            "max_new_tokens must be greater than 0."
+        )
 
     token_ids = torch.tensor(
         [tokenizer.encode(prompt)],
