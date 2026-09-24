@@ -15,6 +15,14 @@ block_size = 64
 learning_rate = 0.001
 steps = 5000
 embedding_size = 64
+random_seed = 42
+
+
+# -----------------------------
+# Reproducibility
+# -----------------------------
+
+torch.manual_seed(random_seed)
 
 
 # -----------------------------
@@ -45,6 +53,7 @@ tokenizer = CharacterTokenizer(all_text)
 vocab_size = tokenizer.vocab_size
 
 print("Vocabulary size:", vocab_size)
+print("Random seed:", random_seed)
 
 
 # -----------------------------
@@ -175,6 +184,7 @@ torch.save(
         "vocab_size": vocab_size,
         "embedding_size": embedding_size,
         "block_size": block_size,
+        "random_seed": random_seed,
     },
     checkpoint_path
 )
