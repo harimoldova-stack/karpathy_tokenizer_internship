@@ -13,8 +13,9 @@ from model import TinyGPT
 batch_size = 4
 block_size = 64
 learning_rate = 0.001
-steps = 5000
+steps = 3000
 embedding_size = 64
+validation_batches = 10
 
 
 # -----------------------------
@@ -112,20 +113,26 @@ optimizer = torch.optim.AdamW(
 # Calculate validation loss
 # -----------------------------
 
-def calculate_loss(data):
+def calculate_loss(data, batches=10):
 
-    inputs, targets = get_batch(data)
+    total_loss = 0.0
 
     with torch.no_grad():
 
-        logits = model(inputs)
+        for _ in range(batches):
 
-        loss = F.cross_entropy(
-            logits.view(-1, vocab_size),
-            targets.view(-1)
-        )
+            inputs, targets = get_batch(data)
 
-    return loss.item()
+            logits = model(inputs)
+
+            loss = F.cross_entropy(
+                logits.view(-1, vocab_size),
+                targets.view(-1)
+            )
+
+            total_loss += loss.item()
+
+    return total_loss / batches
 
 
 # -----------------------------
@@ -154,7 +161,11 @@ for step in range(steps):
     if step % 50 == 0:
 
         train_loss = loss.item()
-        val_loss = calculate_loss(val_data)
+
+        val_loss = calculate_loss(
+            val_data,
+            batches=validation_batches
+        )
 
         print(
             f"Step {step}: "
@@ -175,6 +186,7 @@ torch.save(
         "vocab_size": vocab_size,
         "embedding_size": embedding_size,
         "block_size": block_size,
+        "validation_batches": validation_batches,
     },
     checkpoint_path
 )
